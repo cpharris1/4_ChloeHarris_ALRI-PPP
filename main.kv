@@ -16,32 +16,125 @@
         text: 'Display FFT here'
 
 GridLayout:
-    columns: 1
-    rows: 3
+    cols: 1
+    rows: 3    
+    canvas.before:
+        Color:
+            rgb: [1, 1, 1]
+        Rectangle:
+            # self here refers to the widget i.e FloatLayout
+            pos: self.pos
+            size: self.size
+    #size_hint_y: None
 
-    # Files
-    BoxLayout:
-        orientation: 'horizontal'
-        Button:
-            text: 'New File'
-            on_release:
-                app.timestamp = app.new_timestamp()
-                root.ids.time_label.text = app.timestamp
-                print('Generated new time - ' + app.timestamp)
-        BoxLayout:
-            orientation: 'vertical'
-            Label:
-                text: 'Current File Prefix'
-            Label:
-                id: time_label
-                text: app.timestamp
+    GridLayout:
+        size_hint_y: None
+        cols: 1
+        rows: 1
+        Label: 
+            text: "ALRI Home"
+            color: 0, 0, 0
 
-    # BIOZ
-    BoxLayout:
-        orientation: 'horizontal'
+    GridLayout:
+        size_hint_y: 0.4
+        minimum_height: 30
+        #size_hint_y: None
+        #height: self.minimum_height
+
+        cols: 3
+        rows: 4
+        padding: [10, 10, 10, 10]
+        spacing: 5
+        
+        Label:
+            text: "Clinician ID: "
+            color: 0, 0, 0
+        Spinner:
+            id: clinician_id
+            text: '1'
+            values: '1', '2', '3', '4', '5'
+            on_text:
+                #root.spinner1_clicked(clinician_id.text)
+                print("The clinician_id spinner has text {}".format(root.ids.clinician_id.text))
+        Label:
+            text: ""
+
+        Label:
+            text: "Patient ID: "
+            color: 0, 0, 0
+        Spinner:
+            id: patient_id
+            text: '1'
+            values: '1', '2', '3', '4', '5'
+            on_text:
+                #root.spinner2_clicked(patient_id.text)
+                print("The patient_id spinner has text {}".format(root.ids.patient_id.text))
+        Label:
+            text: ""
+        Label:
+            text: "Date/Time of Start: "
+            color: 0, 0, 0
+        Label:
+            id: time_label
+            text: app.timestamp
+            color: 0, 0, 0
+        GridLayout:
+            cols: 3
+            rows: 1
+            # Button:
+            #     text: 'Refresh'
+            #     on_release:
+            #         app.timestamp = app.new_timestamp()
+            #         root.ids.time_label.text = app.timestamp
+            #         print('Generated new time - ' + app.timestamp)
+            MDIconButton:
+                icon:"refresh"
+                on_release:
+                    app.timestamp = app.new_timestamp()
+                    root.ids.time_label.text = app.timestamp
+                    print('Generated new time - ' + app.timestamp)
+            Label:
+                text: ""
+            Label:
+                text: ""
+
+
+    GridLayout:
+        cols: 3
+        rows: 2
+        size_hint_y: 0.6
+        # Files
+        #BoxLayout:
+        #    orientation: 'horizontal'
+        #    Button:
+        #        text: 'New File'
+        #        on_release:
+        #            app.timestamp = app.new_timestamp()
+        #            root.ids.time_label.text = app.timestamp
+        #            print('Generated new time - ' + app.timestamp)
+        #    BoxLayout:
+        #        orientation: 'vertical'
+        #        Label:
+        #            text: 'Current File Prefix'
+        #        Label:
+        #            id: time_label
+        #            text: app.timestamp
+
+        # Label:
+        #     text: "Label 1"
+        # TextInput:
+        #     text: "hi"
+
+        # BIOZ
+        # BoxLayout:
+        #     orientation: 'vertical'
+        #     padding: [10,10,10,10]
+        #     spacing: 10
+        padding: [10, 10, 10, 10]
+        spacing: 10
         Button:
             text: 'Capture BioZ'
-            color: 1,1,1,1
+            background_color: ("#4472C4")
             on_press:
                 self.color = (1,0,0,1)
                 self.text = "Capturing BIOZ"
@@ -52,19 +145,10 @@ GridLayout:
                 print("BIOZ captured")
                 self.color = (1,1,1,1)
                 self.text="Capture BIOZ"
-        Button:
-            text: 'View BioZ'
-            on_release:
-                print("Viewing BIOZ")
-                #Factory.biozPopup().open()
-                #app.show_bioz()
-                app.plot_bioz()
-    
-    # Audio
-    BoxLayout:
-        orientation: 'horizontal'
+
         Button:
             text: 'Capture Audio'
+            background_color: ("#C00000")
             on_press:
                 self.color = (1,0,0,1)
                 self.text = "Recording"
@@ -73,11 +157,53 @@ GridLayout:
                 app.get_audio()
                 self.color = (1,1,1,1)
                 self.text = "Capture Audio"
+
         Button:
+            text: 'Capture EGG'
+            background_color: ("#385723")
+            on_press:
+                self.color = (1,0,0,1)
+                self.text = "Capturing EGG"
+            on_release:
+                print("Capturing EGG")
+                # app.get_EGG() NOT IMPLEMENTED YET
+                self.color = (1,1,1,1)
+                self.text = "Capture EGG"
+        
+        # Audio
+        # BoxLayout:
+        #     orientation: 'vertical'
+        #     padding: [10,10,10,10]
+        #     spacing: 10
+        
+        Button:
+            text: 'View BioZ'
+            background_color: ("#4472C4")
+            on_release:
+                print("Viewing BIOZ")
+                #Factory.biozPopup().open()
+                #app.show_bioz()
+                app.plot_bioz()
+
+        Button:
+            background_color: ("#C00000")
             text: 'View Audio'
             on_release:
                 print("Viewing audio")
                 #app.show_audio()
                 app.plot_audio()
+
+        # Audio
+        # BoxLayout:
+        #     orientation: 'vertical'
+        #     padding: [10,10,10,10]
+        #     spacing: 10
+        
+        Button:
+            text: 'View EGG'
+            background_color: ("#385723")
+            on_release:
+                print("Viewing EGG")
+                # app.show_EGG() NOT IMPLEMENTED YET
                 
 
