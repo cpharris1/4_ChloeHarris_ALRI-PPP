@@ -1,0 +1,159 @@
+#:kivy 1.0
+
+#:import time time
+#:import os os
+#:import pd pandas
+#:import Factory kivy.factory.Factory
+
+
+# Helpful example of similar style
+# https://stackoverflow.com/questions/34748579/kivy-using-a-screenmanager-from-kv-file
+
+ScreenManager:
+   id: screen_manager
+   MenuScreen:
+      id: menu_screen
+      name: 'MenuScreen'
+      manager: 'screen_manager'
+   VocalScreen:
+      id: vocal_screen
+      name: 'VocalScreen'
+      manager: 'screen_manager'
+
+<MenuScreen>:
+   BoxLayout:
+      orientation: 'vertical'
+      Label:
+         text: 'Main Menu'
+         size_hint: 1, 0.25
+      TextInput:
+         id: patient_num
+         multiline: False
+         hint_text: "Enter patient number"
+         on_text: print(patient_num.text)
+      Button:
+         text: 'Start new Vocal Assessment'
+         on_release: 
+            app.root.transition.direction = 'left'
+            app.root.current = 'VocalScreen'
+         # on_touch_down:
+         #    app.root.transition.direction = 'left'
+         #    app.root.current = 'VocalScreen'
+         width: '100'
+      Button:
+         text: 'View previous Vocal Assessment'
+      Button:
+         text: 'Export data to flash drive'
+         on_release:
+            exec(open('export_data.py').read())
+      Button:
+         text: 'View Device Info'
+
+# <PlotPopup@Popup>:
+#    title: 'Popup window'
+#    size_hint: (None, None)
+#    size: (400, 400)
+#    Button:
+#       text: 'Open plot window'
+#       on_release:
+         
+
+<VocalScreen>:
+   GridLayout:
+      # 5 columns
+      #  Column 1 for controls
+      #  Remaining columns for vocal assessment stages
+      columns: 5
+      rows: 1
+
+      # Controls
+      BoxLayout:
+         orientation: 'vertical'
+         Button:
+            text: 'Return to menu'
+            on_release: 
+               app.root.transition.direction = 'right'
+               app.root.current = 'MenuScreen'
+         Label:
+         Label:
+         Label:
+         Label:
+
+
+      # PreBioZ
+      BoxLayout:
+         orientation: 'vertical'
+         Label:
+            size_hint: 1, .1
+            text: 'Pre BioZ'
+         Button:
+            text: 'Start BioZ'
+            markup: True
+            on_release:
+               print("Starting BioZ")
+               self.text="[color=ffff00]BioZ running[/color]"
+               print("Exec python script here")
+               exec(open('get_BIOZ.py').read())
+               print("Done with BioZ, update button text to green")
+               self.text="[color=00ff00]Start BioZ[/color]"
+         Button:
+            text: 'View BioZ'
+            on_release: 
+               #plot_data()
+               #exec(open("plot_test_data.py").read())
+               #os.system("python plot_test_data.py")
+               root.plot_bioz_data()
+         Label:
+         Label:
+
+
+      # Record "Ah"
+      BoxLayout:
+         orientation: 'vertical'
+         Label:
+            size_hint: 1, .1
+            text: 'Capture "ah"'
+         Button:
+            text: 'Start Recording'
+            on_release: 
+               root.start_recording()
+               exec(open('get_EGG.py').read())
+         Button:
+            text: 'View EGG Sample'
+            on_release: root.plot_egg_data()
+         Button:
+            text: 'View Audio Form'
+            on_release: root.plot_audio()
+         Button:
+            text: 'Listen to Audio'
+            on_release: root.open_audio()
+         
+
+      # Record "Ee"
+      BoxLayout:
+         orientation: 'vertical'
+         Label:
+            size_hint: 1, .1
+            text: 'Capture "ee"'
+         Button:
+            text: 'Start Recording'
+         Button:
+            text: 'View EGG Sample'
+         Button:
+            text: 'View Audio Form'
+         Button:
+            text: 'listen to Audio'
+
+      # PostBioZ
+      BoxLayout:
+         orientation: 'vertical'
+         Label:
+            size_hint: 1, .1
+            text: 'Post BioZ'
+         Button:
+            text: 'Start BIOZ'
+         Button:
+            text: 'View BIOZ'
+         Label:
+         Label:
+

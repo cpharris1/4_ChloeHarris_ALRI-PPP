@@ -1,0 +1,83 @@
+#:kivy 1.0
+
+
+#:import Factory kivy.factory.Factory
+#:import time time
+
+
+<biozPopup>:
+    Label:
+        text: 'Display R graph here'
+    Label:
+        text: 'Display X graph here'
+
+<audioPopup>:
+    Label:
+        text: 'Display FFT here'
+
+GridLayout:
+    columns: 1
+    rows: 3
+
+    # Files
+    BoxLayout:
+        orientation: 'horizontal'
+        Button:
+            text: 'New File'
+            on_release:
+                app.timestamp = app.new_timestamp()
+                root.ids.time_label.text = app.timestamp
+                print('Generated new time - ' + app.timestamp)
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'Current File Prefix'
+            Label:
+                id: time_label
+                text: app.timestamp
+
+    # BIOZ
+    BoxLayout:
+        orientation: 'horizontal'
+        Button:
+            text: 'Capture BioZ'
+            color: 1,1,1,1
+            on_press:
+                self.color = (1,0,0,1)
+                self.text = "Capturing BIOZ"
+            on_release:
+                print("Capturing BIOZ")
+                app.get_bioz();
+                #time.sleep(5)
+                print("BIOZ captured")
+                self.color = (1,1,1,1)
+                self.text="Capture BIOZ"
+        Button:
+            text: 'View BioZ'
+            on_release:
+                print("Viewing BIOZ")
+                #Factory.biozPopup().open()
+                #app.show_bioz()
+                app.plot_bioz()
+    
+    # Audio
+    BoxLayout:
+        orientation: 'horizontal'
+        Button:
+            text: 'Capture Audio'
+            on_press:
+                self.color = (1,0,0,1)
+                self.text = "Recording"
+            on_release:
+                print("Capturing audio")
+                app.get_audio()
+                self.color = (1,1,1,1)
+                self.text = "Capture Audio"
+        Button:
+            text: 'View Audio'
+            on_release:
+                print("Viewing audio")
+                #app.show_audio()
+                app.plot_audio()
+                
+
