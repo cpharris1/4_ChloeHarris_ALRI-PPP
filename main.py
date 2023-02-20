@@ -38,9 +38,16 @@ from scipy.io import wavfile
 from scipy.io.wavfile import write
 import serial
 
+# importing mdapp from kivymd framework
+from kivymd.app import MDApp
+
 # ==============================================================
 # Start-up
 # ==============================================================
+
+from kivy.config import Config 
+Config.set('graphics', 'width', '800') 
+Config.set('graphics', 'height', '480')
 
 ser = serial.Serial(
     #"/dev/serial0", # RPi port
@@ -110,8 +117,7 @@ class biozPopup(BoxLayout):
 class audioPopup(BoxLayout):
     pass
 
-class Main(App):
-
+class Main(MDApp):
 
     def get_bioz(self):
         ser.reset_input_buffer()
@@ -219,6 +225,10 @@ class Main(App):
 
     def new_timestamp(self):
         return datetime.datetime.now().replace(microsecond=0).isoformat()
+
+    #def print_patient_id(self):
+    #    print(self.root.ids.patient_id.text)
+
 
     timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     pass
