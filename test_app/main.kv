@@ -1,0 +1,38 @@
+<HomeScreen>:
+    name: "home_screen"
+    GridLayout:
+        cols: 1
+        Label:
+            id: home_title
+            text: "Home Screen"
+            font_size: 30
+        TextInput:
+            id: your_message
+            hint_text: "Type your message here."
+            font_size: 25
+        Button:
+            text: "Go to OtherScreen"
+            font_size: 25
+            on_press: root.manager.current = "other_screen"
+
+<OtherScreen>
+    name: "other_screen"
+    GridLayout:
+        cols: 1
+        Label:
+            id: search_title
+            text: "Title"
+            font_size: 25
+        Button:
+            text: "Click Here to Change Above 'Title'\nto your_message from HomeScreen"
+            font_size: 20            # ---- This is the reference --- #
+            on_press: root.ids.search_title.text = root.manager.get_screen("home_screen").ids.your_message.text
+            Button:
+                text: "Go Home"
+                on_press: root.manager.current = "home_screen"
+
+<RootWidget>:
+    HomeScreen:
+        name: "home_screen"
+    OtherScreen:
+        name: "other_screen"

@@ -30,6 +30,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('tkagg') # RaspPi specific backend
 import matplotlib.pyplot as plt
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 import time
 import datetime
@@ -49,16 +50,16 @@ from kivy.config import Config
 Config.set('graphics', 'width', '800') 
 Config.set('graphics', 'height', '480')
 
-ser = serial.Serial(
-    #"/dev/serial0", # RPi port
-    "COM7", # Windows port
-    baudrate=115200,
-    bytesize=serial.EIGHTBITS,
-    parity=serial.PARITY_NONE,  # PARITY_EVEN & ODD have issues
-    stopbits=serial.STOPBITS_ONE,
-    timeout=1,
-)
-ser.reset_input_buffer()
+# ser = serial.Serial(
+#     #"/dev/serial0", # RPi port
+#     "COM7", # Windows port
+#     baudrate=115200,
+#     bytesize=serial.EIGHTBITS,
+#     parity=serial.PARITY_NONE,  # PARITY_EVEN & ODD have issues
+#     stopbits=serial.STOPBITS_ONE,
+#     timeout=1,
+# )
+# ser.reset_input_buffer()
 
 # ==============================================================
 # Functions
@@ -117,8 +118,18 @@ class biozPopup(BoxLayout):
 class audioPopup(BoxLayout):
     pass
 
-class Main(MDApp):
+class MenuScreen(Screen):
+    pass
 
+class BiozScreen1(Screen):
+    pass
+
+class AudioScreen1(Screen):
+    pass
+
+class Main(MDApp):
+    pt_id = "1"
+    cl_id = "1"
     def get_bioz(self):
         ser.reset_input_buffer()
         ser_writeread("START")
@@ -226,9 +237,8 @@ class Main(MDApp):
     def new_timestamp(self):
         return datetime.datetime.now().replace(microsecond=0).isoformat()
 
-    #def print_patient_id(self):
-    #    print(self.root.ids.patient_id.text)
-
+    # def print_patient_id(self):
+    #     print(self.root.ids.patient_id.text)
 
     timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
     pass
