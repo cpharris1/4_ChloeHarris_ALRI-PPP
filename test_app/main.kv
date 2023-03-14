@@ -136,7 +136,8 @@
                 font_size: 32
                 on_release:
                     #print("Viewing audio")
-                    root.manager.current = 'ViewAudioScreen1'
+                    #root.manager.current = 'ViewAudioScreen1'
+                    root.manager.get_screen("ViewAudioScreen1").plot_audio()
                     #app.show_audio()
                     #app.plot_audio()
 
@@ -260,7 +261,7 @@
 <ViewBiozScreen1>:
     name: "ViewBiozScreen1"
     on_enter:
-        root.plot_bioz()
+        #root.plot_bioz()
         #root.test_plot()
         #root.plot_in_background()
     BoxLayout:
@@ -392,6 +393,10 @@
 
 <ViewAudioScreen1>:
     name: "ViewAudioScreen1"
+    on_enter:
+        #root.plot_audio()
+        #root.test_plot()
+        #root.plot_in_background()
     BoxLayout:
         orientation: 'vertical'
         padding: 5, 0, 5, 5
@@ -410,7 +415,7 @@
                 #color: 0, 0, 0 
             Label: 
                 markup: True
-                text: '[b]View Audio Data[/b]'
+                text: '[b]View Audio[/b]'
                 color: 0, 0, 0   
                 font_size: 32  
             Button: 
@@ -418,36 +423,23 @@
                 width: 85
                 text: "Help"
                 font_size: 28
-                #on_release: root.manager.current = "AudioHelp"
+                #on_release: root.manager.current = "BiozHelp" // FIXME
+                #color: 0, 0, 0   
 
         BoxLayout:
-            orientation: 'horizontal'
             size_hint_y: None
-            height: 40
-            spacing: 5
+            height: 22
             Label:
-                text: "Clinician ID: "
-                color: 0, 0, 0
-            Label:
-                id: clinician_id
-                text: root.manager.get_screen("home_screen").ids.clinician_id.text
-                color: 0, 0, 0
-                text_size: self.size
-                halign: 'left'
-                valign: 'middle'
-            Label:
-                text: "Patient ID: "
-                color: 0, 0, 0
-            Label:
-                id: patient_id
-                text: root.manager.get_screen("home_screen").ids.patient_id.text
-                color: 0, 0, 0
-                text_size: self.size
-                halign: 'left'
-                valign: 'middle'
-            Label:
-            Label:
+                id: fname
+                text: "Displaying File: "
+                color: 0,0,0
+                font_size: 20
+
         BoxLayout:
+            id: audio_graph
+            orientation: 'vertical'
+            Label:
+                text: "Test"
 
 <EGGScreen1>:
     name: "EGGScreen1"

@@ -80,42 +80,6 @@ except:
    print("Error connecting to serial console.")
 
 
-
-
-def plot_audio(self):
-   filename = "test-audio.wav"
-   folder = "audio"
-   filepath = folder + "/" + filename
-   sample_rate, audio_data = wavfile.read(filepath)
-   length = audio_data.shape[0] / sample_rate
-   time = np.linspace(0, length, audio_data.shape[0])
-
-   ##  Plot time-domain view of audio      
-   # plt.figure(1)
-   # plt.subplot(2, 1, 1)
-   # plt.plot(time,audio_data[:, 0], label="Left channel")
-   # plt.legend()
-   # plt.ylabel("Amplitude")     
-   # plt.subplot(2, 1, 2)
-   # plt.plot(time,audio_data[:, 1], label="Right channel")
-   # plt.legend()
-   # plt.xlabel("Time [s]")
-   # plt.ylabel("Amplitude")
-
-   ##  Plot frequency-domain view
-   signal = audio_data[:,0] # Extract 1 track from audio
-   fft_spectrum = np.fft.rfft(signal) # Compute FFT spectrum
-   freq = np.fft.rfftfreq(signal.size, d=1./sample_rate) # Compute fft frequency units
-   fft_spectrum_abs = np.abs(fft_spectrum)
-
-   plt.figure(1)
-   plt.plot(freq, fft_spectrum_abs)
-   plt.xlabel("frequency, Hz")
-   plt.ylabel("Amplitude, units")
-   mng = plt.get_current_fig_manager()
-   mng.window.state('zoomed')
-   plt.show()
-
 screenNames = ["BiozScreen1", "BiozScreen2", "AudioScreen1", "AudioScreen2"]
 
 class HomeScreen(Screen):
@@ -263,13 +227,16 @@ class ViewBiozScreen1(Screen):
       filename = self.get_filename()
       folder = "bioz"
       savedFile = folder + "/" + filename
+
       if not (os.path.isfile(savedFile)):
          filename = "test-bioz.csv"
-      savedFile = folder + "/test-bioz.csv"
+         print("Oops. File not found.")
+         savedFile = folder + "/test-bioz.csv"
 
       self.ids.fname.text = f"Displaying data from: {filename}"
+      plt.clf()
 
-      #print("Creating figure from measurements")
+      print("Creating figure from measurements")
       fig, (ax1, ax2) = plt.subplots(2,1)
 
       # Add resistance subplot
@@ -280,7 +247,7 @@ class ViewBiozScreen1(Screen):
                            values='ResistanceComputed',
                            aggfunc='mean')
          # Convert dataframe to pivot table
-      #print(df)   # Print pivot table to terminal to confirm values
+      print(df)   # Print pivot table to terminal to confirm values
       df.plot(ax=ax1, legend=None, logx=True)   # Plot DataFrame object to matplotlib window
       ax1.set_title('Measured Resistance (Ohm)')
       #ax1.axis([0, 128000, 45, 55])
@@ -292,13 +259,13 @@ class ViewBiozScreen1(Screen):
                      values='ReactanceComputed',
                      aggfunc='mean')
          # Convert dataframe to pivot table
-      #print(df)   # Print pivot table to terminal to confirm values
+      print(df)   # Print pivot table to terminal to confirm values
       df.plot(ax=ax2, legend=None, logx=True)   # Plot DataFrame object to matplotlib window
       ax2.xaxis.set_label_text('Frequency (Hz)')
       ax2.set_title('Measured Reactance (Ohm)')
       #ax2.axis([0, 128000, -5, 5])
 
-      #print("Displaying figures to user")
+      print("Displaying figures to user")
       fig.subplots_adjust(hspace=1.0)
       #mng = plt.get_current_fig_manager()
       #mng.resize(*mng.window.maxsize())
@@ -362,10 +329,59 @@ class AudioScreen2(Screen):
          self.ids.status.text = "Done!"
          self.ids.saved.text = f"Saved data to file: {self.get_filename()}"
          self.ids.saved.opacity = 1
-         #self.manager.get_screen("ViewBiozScreen1").plot_bioz()
+         self.manager.get_screen("ViewAudioScreen1").plot_audio()
    pass
 
 class ViewAudioScreen1(Screen):
+   def get_filename(self):
+      fullstr = self.manager.get_screen("AudioScreen1").ids.fname.text
+      return fullstr.split("Filename: ", 1)[1]
+   
+   def plot_audio(self):
+      self.ids.audio_graph.clear_widgets()
+
+      filename = self.get_filename()
+      folder = "audio"
+      savedFile = folder + "/" + filename
+      if not (os.path.isfile(savedFile)):
+         filename = "test-audio.wav"
+         savedFile = folder + "/test-audio.wav"
+         print("Oops, file not found")
+
+      self.ids.fname.text = f"Displaying data from: {filename}"
+      plt.clf()
+
+      sample_rate, audio_data = wavfile.read(savedFile)
+      length = audio_data.shape[0] / sample_rate
+      time = np.linspace(0, length, audio_data.shape[0])
+
+      ##  Plot time-domain view of audio      
+      # plt.figure(1)
+      # plt.subplot(2, 1, 1)
+      # plt.plot(time,audio_data[:, 0], label="Left channel")
+      # plt.legend()
+      # plt.ylabel("Amplitude")     
+      # plt.subplot(2, 1, 2)
+      # plt.plot(time,audio_data[:, 1], label="Right channel")
+      # plt.legend()
+      # plt.xlabel("Time [s]")
+      # plt.ylabel("Amplitude")
+
+      ##  Plot frequency-domain view
+      signal = audio_data[:,0] # Extract 1 track from audio
+      fft_spectrum = np.fft.rfft(signal) # Compute FFT spectrum
+      freq = np.fft.rfftfreq(signal.size, d=1./sample_rate) # Compute fft frequency units
+      fft_spectrum_abs = np.abs(fft_spectrum)
+
+      #plt.figure(1)
+      plt.plot(freq, fft_spectrum_abs)
+      plt.xlabel("frequency, Hz")
+      plt.ylabel("Amplitude, units")
+      # mng = plt.get_current_fig_manager()
+      # mng.window.state('zoomed')
+      # plt.show()
+      self.ids.audio_graph.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+      self.manager.current = "ViewAudioScreen1"
    pass
 
 class EGGScreen1(Screen):
