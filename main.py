@@ -48,7 +48,7 @@ from kivymd.app import MDApp
 
 from kivy.config import Config 
 Config.set('graphics', 'width', '800') 
-Config.set('graphics', 'height', '480')
+Config.set('graphics', 'height', '400')
 
 # ser = serial.Serial(
 #     #"/dev/serial0", # RPi port

@@ -209,7 +209,9 @@ ScreenManager:
                 background_color: ("#4472C4")
                 on_press:
                     #self.color = (1,0,0,1)
-                    app.root.current = 'BiozScreen1'
+                    #app.root.current = 'BiozScreen1'
+                    app.root.manager.get_screen("ViewBiozScreen1").plot_bioz()
+
 
                 # on_release:
                 #     print("Capturing BIOZ")
