@@ -1,144 +1,27 @@
 #:kivy 1.0
-
-
 #:import Factory kivy.factory.Factory
 #:import time time
 
-
-<biozPopup>:
-    Label:
-        text: 'Display R graph here'
-    Label:
-        text: 'Display X graph here'
-
-<audioPopup>:
-    Label:
-        text: 'Display FFT here'
-
-ScreenManager:
-    id: screen_manager
-    #transition: FadeTransition()
-    MenuScreen:
-        id: menu_screen
-        name: 'MenuScreen'
-        manager: 'screen_manager'
-    BiozScreen1:
-        id: bioz_1
-        name: 'BiozScreen1'
-        manager: 'screen_manager'
-    AudioScreen1: 
-        id: audio_1
-        name: 'AudioScreen1'
-        manager: 'screen_manager'
-
-<BiozScreen1>:
-    name: 'BiozScreen1'
+<HomeScreen>:
+    name: "home_screen"
     GridLayout:
         cols: 1
         rows: 3    
-        canvas.before:
-            Color:
-                rgb: [1, 1, 1]
-            Rectangle:
-                # self here refers to the widget i.e FloatLayout
-                pos: self.pos
-                size: self.size
-        #size_hint_y: None
-        GridLayout:
-            size_hint_y: 0.1
-            minimum_height: 20
-            cols: 3
-            rows: 1
-            Button:
-                background_color: ("#C00000")
-                text: 'Menu'
-                on_press: 
-                    print(app.root.get_screen('MenuScreen').ids.patient_id.text)
-                on_release:
-                    app.root.current = 'MenuScreen'
-                    print(app.root.get_screen('MenuScreen').ids.patient_id.text)
-            Label:
-                text: "Capture BioZ Data"
-                color: 0, 0, 0                    
-            Label:
-                text:""
-        GridLayout:
-            size_hint_y: 0.1
-            minimum_height: 20
-            #size_hint_y: None
-            #height: self.minimum_height
-
-            cols: 3
-            rows: 1
-            #padding: [10, 10, 10, 10]
-            spacing: 5
-            GridLayout:
-                cols: 2
-                rows: 1
-                #padding: [L, T, R, B]
-                padding: [0, 0, 3, 0]
-                Label:
-                    text: "Clinician ID: "
-                    color: 0, 0, 0
-                Label:
-                    id: "clid"
-                    text: "0"
-                    color: 0, 0, 0
-                    
-            GridLayout:
-                cols: 2
-                rows: 1
-                #padding: [L, T, R, B]
-                padding: [0, 0, 3, 0]
-                Label:
-                    text: "Patient ID: "
-                    color: 0, 0, 0
-                Label:
-                    id: "ptid"
-                    text: "0"
-                    color: 0, 0, 0
-            Label:
-                text: ""
-                color: 0, 0, 0
-
-
-<AudioScreen1>:
-    name: 'AudioScreen1'
-    Button:
-        background_color: ("#C00000")
-        text: 'Menu'
-        on_release:
-            app.root.current = 'MenuScreen'
-
-<MenuScreen>:
-    name: 'MenuScreen'
-    GridLayout:
-        cols: 1
-        rows: 3    
-        canvas.before:
-            Color:
-                rgb: [1, 1, 1]
-            Rectangle:
-                # self here refers to the widget i.e FloatLayout
-                pos: self.pos
-                size: self.size
-        #size_hint_y: None
 
         GridLayout:
-            size_hint_y: 0.1
-            minimum_height: 20
+            size_hint_y: None
+            height: 60
             cols: 3
             rows: 1
             Label: 
-                text: "ALRI Home"
-                color: 0, 0, 0                    
+                markup: True
+                text: '[b]Vocal Fold Assessment Home[/b]'
+                color: 0, 0, 0   
+                font_size: 32               
 
         GridLayout:
-            size_hint_y: 0.1
-            minimum_height: 20
-            #size_hint_y: None
-            #height: self.minimum_height
-
+            size_hint_y: None
+            height: 40
             cols: 3
             rows: 1
             #padding: [10, 10, 10, 10]
@@ -151,13 +34,14 @@ ScreenManager:
                 Label:
                     text: "Clinician ID: "
                     color: 0, 0, 0
+                    font_size: 22
                 Spinner:
                     id: clinician_id
                     text: '1'
                     values: '1', '2', '3', '4', '5'
+                    font_size: 22
                     on_text:
-                        app.cl_id = root.ids.clinician_id.text
-                        print(app.cl_id)
+                        root.update_id()
                         print("The clinician_id spinner has text {}".format(root.ids.clinician_id.text))
             GridLayout:
                 cols: 2
@@ -167,36 +51,18 @@ ScreenManager:
                 Label:
                     text: "Patient ID: "
                     color: 0, 0, 0
+                    font_size: 22
                 Spinner:
                     id: patient_id
                     text: '1'
                     values: '1', '2', '3', '4', '5'
+                    font_size: 22
                     on_text:
-                        #root.spinner2_clicked(patient_id.text)
-                        app.pt_id = root.ids.clinician_id.text
-                        print(app.pt_id)
+                        root.update_id()
                         print("The patient_id spinner has text {}".format(root.ids.patient_id.text))
             Label:
                 text: ""
                 color: 0, 0, 0
-            # Label:
-            #     text: "Start Date/Time: "
-            #     color: 0, 0, 0
-            # GridLayout:
-            #     cols: 2
-            #     rows:1
-            #     Label:
-            #         id: time_label
-            #         text: app.timestamp
-            #         color: 0, 0, 0
-            #     MDIconButton:
-            #         icon:"refresh"
-            #         on_release:
-            #             app.timestamp = app.new_timestamp()
-            #             root.ids.time_label.text = app.timestamp
-            #             print('Generated new time - ' + app.timestamp)
-
-
 
         GridLayout:
             cols: 3
@@ -205,13 +71,14 @@ ScreenManager:
             padding: [10, 10, 10, 10]
             spacing: 10
             Button:
+                markup: True
                 text: 'Capture BioZ'
                 background_color: ("#4472C4")
-                on_press:
+                font_size: 32
+                on_release:
                     #self.color = (1,0,0,1)
-                    #app.root.current = 'BiozScreen1'
-                    app.root.manager.get_screen("ViewBiozScreen1").plot_bioz()
-
+                    root.manager.current = 'BiozScreen1'
+                    
 
                 # on_release:
                 #     print("Capturing BIOZ")
@@ -222,11 +89,14 @@ ScreenManager:
                 #     self.text="Capture BIOZ"
 
             Button:
+                markup: True
                 text: 'Capture Audio'
                 background_color: ("#C00000")
-                on_press:
+                font_size: 32
+                on_release:
+                    root.manager.current = 'AudioScreen1'
                     #self.color = (1,0,0,1)
-                    app.root.current = 'AudioScreen1'
+                    #root.manager.current = 'AudioScreen1'
                 #     self.text = "Recording"
                 # on_release:
                 #     print("Capturing audio")
@@ -235,51 +105,656 @@ ScreenManager:
                 #     self.text = "Capture Audio"
 
             Button:
+                markup: True
                 text: 'Capture EGG'
+                font_size: 32
                 background_color: ("#385723")
-                on_press:
-                    self.color = (1,0,0,1)
-                    self.text = "Capturing EGG"
                 on_release:
-                    print("Capturing EGG")
+                    #print("Capturing EGG")
+                    root.manager.current = 'EGGScreen1'
                     # app.get_EGG() NOT IMPLEMENTED YET
-                    self.color = (1,1,1,1)
-                    self.text = "Capture EGG"
-            
-            # Audio
-            # BoxLayout:
-            #     orientation: 'vertical'
-            #     padding: [10,10,10,10]
-            #     spacing: 10
+                    #self.color = (1,1,1,1)
+                    #self.text = "Capture EGG"
             
             Button:
+                markup: True
                 text: 'View BioZ'
+                font_size: 32
                 background_color: ("#4472C4")
                 on_release:
-                    print("Viewing BIOZ")
+                    #root.manager.current = 'ViewBiozScreen1'
+                    root.manager.get_screen("ViewBiozScreen1").plot_bioz()
+                    #print("Viewing BIOZ")
                     #Factory.biozPopup().open()
                     #app.show_bioz()
-                    app.plot_bioz()
+                    #app.plot_bioz()
 
             Button:
                 background_color: ("#C00000")
+                markup: True
                 text: 'View Audio'
+                font_size: 32
                 on_release:
-                    print("Viewing audio")
+                    #print("Viewing audio")
+                    #root.manager.current = 'ViewAudioScreen1'
+                    root.manager.get_screen("ViewAudioScreen1").plot_audio()
                     #app.show_audio()
-                    app.plot_audio()
+                    #app.plot_audio()
 
-            # Audio
-            # BoxLayout:
-            #     orientation: 'vertical'
-            #     padding: [10,10,10,10]
-            #     spacing: 10
-            
             Button:
+                markup: True
                 text: 'View EGG'
+                font_size: 32
                 background_color: ("#385723")
                 on_release:
-                    print("Viewing EGG")
+                    #print("Viewing EGG")
+                    root.manager.current = 'ViewEGGScreen1'
                     # app.show_EGG() NOT IMPLEMENTED YET
-                    
 
+<BiozScreen1>:
+    name: "BiozScreen1"
+    on_enter:
+        root.update_filename()
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Home"
+                font_size: 28
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]Capture BioZ Data[/b]'
+                color: 0, 0, 0   
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                on_release: root.manager.current = "BiozHelp"
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+            Label:
+                id: patient_id
+                text: "Patient ID: " + root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                font_size: 22
+            Label:
+                text: "Trial Type: "
+                color: 0, 0, 0
+                font_size: 22
+            Spinner:
+                id: trial_type
+                text: 'Breathing'
+                values: 'Breathing', 'Bearing Down', 'Eeee', 'Aaahhh', 'Moving', 'Test'
+                font_size: 22
+                on_text:
+                    root.update_filename()
+                    root.update_spinner()
+            Label:
+                text: "Trial Number: "
+                color: 0, 0, 0
+                font_size: 22
+            Spinner:
+                id: trial_num
+                text: '1'
+                values: '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'
+                font_size: 22
+                on_text:
+                    root.update_filename()   
+                    root.update_spinner()                 
+                
+        BoxLayout:  
+            orientation: 'vertical'
+            size_hint_y: None
+            #size_hint_x: None
+            height: 70
+            Label:
+                markup: True
+                text:"[b]Instructions:[/b] \nPlease place the electrodes on the patient's neck and ensure that the wired connections to the hardware match the photos shown below. Press start to begin collecting data."
+                color: 0,0,0   
+                text_size: self.size
+                font_size: 20
+
+        BoxLayout:
+            orientation: 'horizontal'
+            Image:
+                source: 'images/electrode_1.png'
+                size: self.texture_size
+            Image:
+                source: 'images/electrode_2.png'
+                size: self.texture_size
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            Label:
+                id: fname
+                text: "Filename: test-bioz.csv"
+                color: 0,0,0
+                font_size: 22
+            Button:
+                text: 'Start'
+                font_size: 32
+                background_color: ("#70AD47")
+                on_release: 
+                    root.manager.current = "BiozScreen2"
+            Label:
+                    
+        #BoxLayout:
+
+<ViewBiozScreen1>:
+    name: "ViewBiozScreen1"
+    on_enter:
+        #root.plot_bioz()
+        #root.test_plot()
+        #root.plot_in_background()
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Home"
+                font_size: 28
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]View BioZ[/b]'
+                color: 0, 0, 0   
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                on_release: root.manager.current = "BiozHelp" // FIXME
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            size_hint_y: None
+            height: 22
+            Label:
+                id: fname
+                text: "Displaying File: "
+                color: 0,0,0
+                font_size: 20
+
+        BoxLayout:
+            id: bioz_graph
+            orientation: 'vertical'
+            Label:
+                text: "Test"
+
+
+
+
+<AudioScreen1>:
+    name: "AudioScreen1"
+    on_enter:
+        root.update_filename()
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Home"
+                font_size: 28
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]Capture Audio Data[/b]'
+                color: 0, 0, 0   
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                #on_release: root.manager.current = "AudioHelp"
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+            Label:
+                id: patient_id
+                text: "Patient ID: " + root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                font_size: 22                      
+                
+        BoxLayout:  
+            orientation: 'vertical'
+            size_hint_y: None
+            #size_hint_x: None
+            height: 70
+            Label:
+                markup: True
+                text:"[b]Instructions:[/b] \nPlease place the microphone 4cm away from the patient's mouth at a 45 degree angle. Press start when ready to record the audio sample."
+                color: 0,0,0   
+                text_size: self.size
+                font_size: 20
+
+        BoxLayout:
+            orientation: 'horizontal'
+            Image:
+                source: 'images/blue_yeti.jpg'
+                size: self.texture_size
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            Label:
+                id: fname
+                text: "Filename: test-audio.wav"
+                color: 0,0,0
+                font_size: 22
+            Button:
+                text: 'Start'
+                font_size: 32
+                background_color: ("#70AD47")
+                on_release: 
+                    root.manager.current = "AudioScreen2"
+                    #root.get_audio()
+                    #root.manager.current = "AudioScreen2"
+            Label:
+
+<ViewAudioScreen1>:
+    name: "ViewAudioScreen1"
+    on_enter:
+        #root.plot_audio()
+        #root.test_plot()
+        #root.plot_in_background()
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Home"
+                font_size: 28
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]View Audio[/b]'
+                color: 0, 0, 0   
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                #on_release: root.manager.current = "BiozHelp" // FIXME
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            size_hint_y: None
+            height: 22
+            Label:
+                id: fname
+                text: "Displaying File: "
+                color: 0,0,0
+                font_size: 20
+
+        BoxLayout:
+            id: audio_graph
+            orientation: 'vertical'
+            Label:
+                text: "Test"
+
+<EGGScreen1>:
+    name: "EGGScreen1"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 60
+                text: "Home"
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                text: "Collect EGG Data"
+                color: 0, 0, 0   
+            Button: 
+                size_hint_x: None
+                width: 60
+                text: "Help"
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+            Label:
+                text: "Clinician ID: "
+                color: 0, 0, 0
+            Label:
+                id: clinician_id
+                text: root.manager.get_screen("home_screen").ids.clinician_id.text
+                color: 0, 0, 0
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Label:
+                text: "Patient ID: "
+                color: 0, 0, 0
+            Label:
+                id: patient_id
+                text: root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Label:
+            Label:
+        BoxLayout:
+
+<ViewEGGScreen1>:
+    name: "ViewEGGScreen1"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 60
+                text: "Home"
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                text: "View EGG Data"
+                color: 0, 0, 0   
+            Button: 
+                size_hint_x: None
+                width: 60
+                text: "Help"
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+            Label:
+                text: "Clinician ID: "
+                color: 0, 0, 0
+            Label:
+                id: clinician_id
+                text: root.manager.get_screen("home_screen").ids.clinician_id.text
+                color: 0, 0, 0
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Label:
+                text: "Patient ID: "
+                color: 0, 0, 0
+            Label:
+                id: patient_id
+                text: root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Label:
+            Label:
+        BoxLayout:
+
+<BiozScreen2>:
+    name: "BiozScreen2"
+    on_enter: 
+    #     #root.ids.spinner.active = True
+        spinner.active = True
+        root.start_background_task()
+        
+        
+        #spinner.active = False
+
+    #     #time.sleep(5)
+    #     print("BIOZ captured")
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 80
+                text: "Home"
+                font_size: 20
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]Capture BioZ Data[/b]'
+                color: 0, 0, 0   
+                font_size: 24    
+            Button: 
+                size_hint_x: None
+                width: 80
+                text: "Help"
+                font_size: 20
+                on_release: root.manager.current = "BiozHelp"
+                #color: 0, 0, 0   
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+
+            Label:
+                id: patient_id
+                text: "Patient ID: " + root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                font_size: 18
+
+            Label:
+                id: trial_type
+                text: "Trial Type: " + root.manager.get_screen("BiozScreen1").ids.trial_type.text
+                color: 0, 0, 0
+                font_size: 18
+            Label:
+                id: trial_num
+                text: "Trial Number: " + root.manager.get_screen("BiozScreen1").ids.trial_num.text
+                color: 0, 0, 0
+                font_size: 18
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: status
+                text: "Collecting BioZ Data..."
+                font_size: 20
+                color: 0, 0, 0
+            MDSpinner:
+                id: spinner
+                size_hint: None, None
+                size: dp(60), dp(60)
+                pos_hint: {'center_x': .5, 'center_y': 0}
+                active: False
+            Label:
+                id: saved
+                text: "File save confirmation"
+                color: 0,0,0
+                opacity: 0
+                font_size: 20
+        
+
+<AudioScreen2>:
+    name: "AudioScreen2"
+    on_enter: 
+        spinner.active = True
+        root.start_background_task()
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 80
+                text: "Home"
+                font_size: 20
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]Capture Audio[/b]'
+                color: 0, 0, 0   
+                font_size: 24    
+            Button: 
+                size_hint_x: None
+                width: 80
+                text: "Help"
+                font_size: 20
+                #on_release: root.manager.current = "AudioHelp"
+                #color: 0, 0, 0   
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+
+            Label:
+                id: patient_id
+                text: "Patient ID: " + root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                font_size: 18
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                id: status
+                text: "Recording Audio Data..."
+                font_size: 20
+                color: 0, 0, 0
+            MDSpinner:
+                id: spinner
+                size_hint: None, None
+                size: dp(60), dp(60)
+                pos_hint: {'center_x': .5, 'center_y': 0}
+                active: False
+            Label:
+                id: saved
+                text: "File save confirmation"
+                color: 0,0,0
+                opacity: 0
+                font_size: 20
+        
+
+
+<BiozHelp>:
+    name: "BiozHelp"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 40
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 60
+                text: "Back"
+                on_release: root.manager.current = "BiozScreen1"
+                #color: 0, 0, 0 
+            Label: 
+                text: "BioZ Help"
+                color: 0, 0, 0   
+            Label: 
+                size_hint_x: None
+                width: 60
+                text: ""
+
+        BoxLayout:
+            orientation: 'horizontal'
+            #size_hint: 1, 1
+            # size_hint_y: None
+            # size_hint_x: None
+            # size: 800, 300
+            Image:
+                source: 'images/electrode_3.png'
+                size: self.texture_size
+            Image:
+                source: 'images/electrode_4.png'
+                size: self.texture_size
+
+
+<RootWidget>:
+    HomeScreen:
+        name: "home_screen"
+    BiozScreen1:
+        name: "BiozScreen1"
+    BiozScreen2:
+        name: "BiozScreen2"
+    BiozHelp:
+        name: "BiozHelp"
+    AudioScreen1:
+        name: "AudioScreen1"
+    AudioScreen2:
+        name: "AudioScreen2"
+    EGGScreen1:
+        name: "EGGScreen1"
+    ViewBiozScreen1:
+        name: "ViewBiozScreen1"
+    ViewAudioScreen1:
+        name: "ViewAudioScreen1"
+    ViewEGGScreen1:
+        name: "ViewEGGScreen1"
