@@ -40,15 +40,19 @@ import serial
 from kivymd.app import MDApp
 import threading
 
-import os
+import os, sys
 
-from ctypes import windll, c_int64
 from kivy.config import Config
 
-
-pi = False
+# Default to raspberry pi config, pass in argv w for windows testing
+# For windows config execute as: python3 main.py w
+pi = True
+if((len(sys.argv)) > 1):
+   if (sys.argv[1] == 'w'):
+      pi = False
 
 if not pi:
+   from ctypes import windll, c_int64
    windll.user32.SetProcessDpiAwarenessContext(c_int64(-4))
 
 Window.clearcolor = (1, 1, 1, 1)
