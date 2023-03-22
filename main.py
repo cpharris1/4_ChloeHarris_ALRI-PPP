@@ -219,6 +219,47 @@ class BiozScreen2(Screen):
 class BiozHelp(Screen):
    pass
 
+class ExportFileScreen(Screen):
+   drive_name = "none"
+   drive_path = "none"
+   def update_preview(self):
+      self.drive_name = self.ids.usb_drive.text
+      if(self.drive_name == "none"):
+         self.ids.dir_preview.text = "No drive selected."
+      else:
+         files = os.listdir(self.drive_path)
+         file_str = "\n".join(str(x) for x in files[:5])
+         full_str = "Drive Preview:\n" + file_str
+         self.ids.dir_preview.text = full_str
+
+   def search_drives(self):
+      available_drives = []
+      if(not pi):
+         import win32api
+         win_drives = win32api.GetLogicalDriveStrings()
+         available_drives = win_drives.split('\000')[:-1]
+      else:
+         available_drives = os.listdir('/media/pi/')
+      self.ids.usb_drive.values = available_drives
+      if(available_drives):
+         self.ids.usb_drive.text = available_drives[0]
+      else:
+         self.ids.usb_drive.text = "No Drives Found"
+      #print(available_drives)
+
+   def update_selected(self):
+      drive = self.ids.usb_drive.text
+      if(drive != "No Drives Found"):
+         if(pi):
+            self.drive_path = '/media/pi/' + drive.replace(" ", "\ ")
+         else:
+            self.drive_path = drive
+         self.drive = drive
+         print("path " + self.drive_path)
+         print("name " + self.drive)
+         self.update_preview()
+   pass
+
 class ViewBiozScreen1(Screen):
    done = False
    def get_filename(self):
@@ -234,13 +275,13 @@ class ViewBiozScreen1(Screen):
 
       if not (os.path.isfile(savedFile)):
          filename = "test-bioz.csv"
-         print("Oops. File not found.")
+         #print("Oops. File not found.")
          savedFile = folder + "/test-bioz.csv"
 
       self.ids.fname.text = f"Displaying data from: {filename}"
       plt.clf()
 
-      print("Creating figure from measurements")
+      #print("Creating figure from measurements")
       fig, (ax1, ax2) = plt.subplots(2,1)
 
       # Add resistance subplot
@@ -251,7 +292,7 @@ class ViewBiozScreen1(Screen):
                            values='ResistanceComputed',
                            aggfunc='mean')
          # Convert dataframe to pivot table
-      print(df)   # Print pivot table to terminal to confirm values
+      #print(df)   # Print pivot table to terminal to confirm values
       df.plot(ax=ax1, legend=None, logx=True)   # Plot DataFrame object to matplotlib window
       ax1.set_title('Measured Resistance (Ohm)')
       #ax1.axis([0, 128000, 45, 55])
@@ -263,13 +304,13 @@ class ViewBiozScreen1(Screen):
                      values='ReactanceComputed',
                      aggfunc='mean')
          # Convert dataframe to pivot table
-      print(df)   # Print pivot table to terminal to confirm values
+      #print(df)   # Print pivot table to terminal to confirm values
       df.plot(ax=ax2, legend=None, logx=True)   # Plot DataFrame object to matplotlib window
       ax2.xaxis.set_label_text('Frequency (Hz)')
       ax2.set_title('Measured Reactance (Ohm)')
       #ax2.axis([0, 128000, -5, 5])
 
-      print("Displaying figures to user")
+      #print("Displaying figures to user")
       fig.subplots_adjust(hspace=1.0)
       #mng = plt.get_current_fig_manager()
       #mng.resize(*mng.window.maxsize())

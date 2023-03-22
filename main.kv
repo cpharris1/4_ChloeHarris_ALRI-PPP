@@ -24,8 +24,8 @@
             height: 40
             cols: 3
             rows: 1
-            #padding: [10, 10, 10, 10]
-            spacing: 5
+            padding: [5, 0, 5, 0]
+            #spacing: 5
             GridLayout:
                 cols: 2
                 rows: 1
@@ -60,9 +60,14 @@
                     on_text:
                         root.update_id()
                         print("The patient_id spinner has text {}".format(root.ids.patient_id.text))
-            Label:
-                text: ""
-                color: 0, 0, 0
+            Button:
+                markup: True
+                text: 'Export Files'
+                background_color: ("#7600bc")
+                font_size: 22
+                on_release:
+                    #self.color = (1,0,0,1)
+                    root.manager.current = 'ExportFileScreen'
 
         GridLayout:
             cols: 3
@@ -78,15 +83,6 @@
                 on_release:
                     #self.color = (1,0,0,1)
                     root.manager.current = 'BiozScreen1'
-                    
-
-                # on_release:
-                #     print("Capturing BIOZ")
-                #     app.get_bioz();
-                #     #time.sleep(5)
-                #     print("BIOZ captured")
-                #     self.color = (1,1,1,1)
-                #     self.text="Capture BIOZ"
 
             Button:
                 markup: True
@@ -95,14 +91,6 @@
                 font_size: 32
                 on_release:
                     root.manager.current = 'AudioScreen1'
-                    #self.color = (1,0,0,1)
-                    #root.manager.current = 'AudioScreen1'
-                #     self.text = "Recording"
-                # on_release:
-                #     print("Capturing audio")
-                #     app.get_audio()
-                #     self.color = (1,1,1,1)
-                #     self.text = "Capture Audio"
 
             Button:
                 markup: True
@@ -737,6 +725,101 @@
                 size: self.texture_size
 
 
+
+<ExportFileScreen>:
+    name: "ExportFileScreen"
+    on_enter:
+        root.search_drives()
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 5, 0, 5, 5
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Home"
+                font_size: 28
+                on_release: root.manager.current = "home_screen"
+                #color: 0, 0, 0 
+            Label: 
+                markup: True
+                text: '[b]Export Files[/b]'
+                color: 0, 0, 0   
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                #on_release: root.manager.current = "BiozHelp"
+                #color: 0, 0, 0   
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 40
+            spacing: 5
+            Label:
+                id: patient_id
+                text: "Patient ID: " + root.manager.get_screen("home_screen").ids.patient_id.text
+                color: 0, 0, 0
+                font_size: 22
+
+                
+        BoxLayout:  
+            orientation: 'vertical'
+            size_hint_y: None
+            #size_hint_x: None
+            Label:
+                markup: True
+                text:"[b]Instructions:[/b] \nPlease plug in your USB drive and select it from the drop-down list below. If the list is empty, please press the refresh button. A short list of files in the drive will be displayed below to confirm the correct drive is selected. Press export to copy files."
+                color: 0,0,0   
+                text_size: self.size
+                font_size: 20
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            Label:
+                text: "USB Drive: "
+                color: 0, 0, 0
+                font_size: 22
+            Spinner:
+                id: usb_drive
+                text: 'No Drives Found'
+                values: ''
+                font_size: 22
+                on_text:
+                    root.update_selected()
+            Button:
+                size_hint_x: None
+                width: 100
+                text: "Refresh"
+                on_release:
+                    root.search_drives()
+        Label:
+            id: dir_preview
+            text: "No files found."
+            color: 0,0,0
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 60
+            Label:
+            Button:
+                text: 'Export'
+                font_size: 32
+                background_color: ("#70AD47")
+                on_release: 
+                    #root.manager.current = "BiozScreen2"
+            Label:
+
 <RootWidget>:
     HomeScreen:
         name: "home_screen"
@@ -758,3 +841,5 @@
         name: "ViewAudioScreen1"
     ViewEGGScreen1:
         name: "ViewEGGScreen1"
+    ExportFileScreen:
+        name: "ExportFileScreen"
