@@ -35,6 +35,7 @@ import sounddevice as sd
 from scipy.io import wavfile
 from scipy.io.wavfile import write
 import serial
+import shutil
 
 # importing mdapp from kivymd framework
 from kivymd.app import MDApp
@@ -53,6 +54,7 @@ if((len(sys.argv)) > 1):
 
 if not pi:
    from ctypes import windll, c_int64
+   import win32api
    windll.user32.SetProcessDpiAwarenessContext(c_int64(-4))
 
 Window.clearcolor = (1, 1, 1, 1)
@@ -84,11 +86,10 @@ except:
    print("Error connecting to serial console.")
 
 
-screenNames = ["BiozScreen1", "BiozScreen2", "AudioScreen1", "AudioScreen2"]
+screenNames = ["BiozScreen1", "BiozScreen2", "AudioScreen1", "AudioScreen2", "ExportFileScreen"]
 
 class HomeScreen(Screen):
    def update_id(self):
-      # TODO: You may not need this fxn anymore
       #print("")
       home_ref = self.manager.get_screen("home_screen")
       pt_id = home_ref.ids.patient_id.text
@@ -223,41 +224,94 @@ class ExportFileScreen(Screen):
    drive_name = "none"
    drive_path = "none"
    def update_preview(self):
-      self.drive_name = self.ids.usb_drive.text
+      #self.drive_name = self.ids.usb_drive.text
       if(self.drive_name == "none"):
          self.ids.dir_preview.text = "No drive selected."
       else:
-         files = os.listdir(self.drive_path)
+         files = ["None"]
+         try:
+            files = os.listdir(self.drive_path)
+            files = [x for x in files if not x.startswith('.')]
+         except:
+            print("Error reading drive")
          file_str = "\n".join(str(x) for x in files[:5])
          full_str = "Drive Preview:\n" + file_str
          self.ids.dir_preview.text = full_str
 
    def search_drives(self):
       available_drives = []
+      self.ids.check_done.opacity = 0
+      self.ids.text_done.opacity = 0
+      self.ids.text_done.text = "Files have not copied yet."
       if(not pi):
-         import win32api
          win_drives = win32api.GetLogicalDriveStrings()
          available_drives = win_drives.split('\000')[:-1]
+         # Ignore the C drive since we want just the usb drives
+         if("C:\\"in available_drives):
+            available_drives.remove("C:\\")
       else:
          available_drives = os.listdir('/media/pi/')
+         # ALRI-pi has a JALAYTON folder in the media drive. Ignore.
+         if("JALAYTON" in available_drives):
+            available_drives.remove("JALAYTON")
       self.ids.usb_drive.values = available_drives
       if(available_drives):
          self.ids.usb_drive.text = available_drives[0]
       else:
          self.ids.usb_drive.text = "No Drives Found"
+         self.drive_name = "none"
+         self.drive_path = "none"
       #print(available_drives)
 
    def update_selected(self):
       drive = self.ids.usb_drive.text
       if(drive != "No Drives Found"):
          if(pi):
-            self.drive_path = '/media/pi/' + drive.replace(" ", "\ ")
+            self.drive_path = '/media/pi/' + drive
          else:
             self.drive_path = drive
-         self.drive = drive
-         print("path " + self.drive_path)
-         print("name " + self.drive)
-         self.update_preview()
+         self.drive_name = drive
+         #print("path " + self.drive_path)
+         #print("name " + drive)
+         #self.update_preview()
+      else:
+         self.drive_name = "none"
+         self.drive_path = "none"
+   
+   def export(self):
+      error = False
+      self.ids.check_done.opacity = 0
+      self.ids.text_done.opacity = 0
+      audio_source = os.path.abspath("audio")
+      bioz_source = os.path.abspath("bioz")
+      sources = [audio_source, bioz_source]
+      destination_dir = self.drive_path
+      if(destination_dir != "none"):
+         try:
+            #shutil.copytree(audio_source, destination_dir, dirs_exist_ok=True)
+            #shutil.copytree(bioz_source, destination_dir, dirs_exist_ok=True)
+            for source_dir in sources:
+               for file_name in os.listdir(source_dir):
+                  # construct full file path
+                  slash = "/" if pi else "\\"
+                  source = source_dir + slash + file_name
+                  destination = destination_dir + slash + file_name
+                  # copy only files
+                  if os.path.isfile(source):
+                     shutil.copy(source, destination)
+         except:
+            #print("Error copying files.")
+            self.ids.text_done.opacity = 1
+            self.ids.text_done.text = "Error copying files."
+            error = True
+         if (not error):
+            #print("Files successfully copied to drive: " + destination_dir)
+            self.ids.check_done.opacity = 1
+            self.ids.text_done.opacity = 1
+            self.ids.text_done.text = "Files successfully copied to drive: " + destination_dir
+      else:
+         self.ids.text_done.opacity = 1
+         self.ids.text_done.text = "No USB drive selected. Please select drive or press refresh."
    pass
 
 class ViewBiozScreen1(Screen):

@@ -24,8 +24,8 @@
             height: 40
             cols: 3
             rows: 1
-            padding: [5, 0, 5, 0]
-            #spacing: 5
+            padding: [5, 1]
+            spacing: 5
             GridLayout:
                 cols: 2
                 rows: 1
@@ -42,7 +42,7 @@
                     font_size: 22
                     on_text:
                         root.update_id()
-                        print("The clinician_id spinner has text {}".format(root.ids.clinician_id.text))
+                        #print("The clinician_id spinner has text {}".format(root.ids.clinician_id.text))
             GridLayout:
                 cols: 2
                 rows: 1
@@ -59,7 +59,7 @@
                     font_size: 22
                     on_text:
                         root.update_id()
-                        print("The patient_id spinner has text {}".format(root.ids.patient_id.text))
+                        #print("The patient_id spinner has text {}".format(root.ids.patient_id.text))
             Button:
                 markup: True
                 text: 'Export Files'
@@ -347,7 +347,7 @@
             orientation: 'vertical'
             size_hint_y: None
             #size_hint_x: None
-            height: 70
+            height: 80
             Label:
                 markup: True
                 text:"[b]Instructions:[/b] \nPlease place the microphone 4cm away from the patient's mouth at a 45 degree angle. Press start when ready to record the audio sample."
@@ -777,36 +777,63 @@
             #size_hint_x: None
             Label:
                 markup: True
-                text:"[b]Instructions:[/b] \nPlease plug in your USB drive and select it from the drop-down list below. If the list is empty, please press the refresh button. A short list of files in the drive will be displayed below to confirm the correct drive is selected. Press export to copy files."
+                text:"[b]Instructions:[/b] \nPlease plug in your USB drive and select it from the drop-down list below. If the list does not have your drive, please press the refresh button. Press export to copy files."
                 color: 0,0,0   
                 text_size: self.size
                 font_size: 20
-
+            Label:
+                size_hint_y: None
+                height: 5
         BoxLayout:
             orientation: 'horizontal'
-            size_hint_y: None
-            height: 60
             Label:
-                text: "USB Drive: "
-                color: 0, 0, 0
-                font_size: 22
-            Spinner:
-                id: usb_drive
-                text: 'No Drives Found'
-                values: ''
-                font_size: 22
-                on_text:
-                    root.update_selected()
-            Button:
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 60
                 size_hint_x: None
-                width: 100
-                text: "Refresh"
-                on_release:
-                    root.search_drives()
+                width: 600
+                spacing: 5
+                Label:
+                    text: "USB Drive:    "
+                    color: 0, 0, 0
+                    font_size: 22
+                    halign: "right"
+                    valign: "middle"
+                    size_hint_x: None
+                    width: 100
+                    text_size: self.size
+                Spinner:
+                    id: usb_drive
+                    text: 'No Drives Found'
+                    values: ''
+                    font_size: 22
+                    on_text:
+                        root.update_selected()
+                Button:
+                    size_hint_x: None
+                    width: 100
+                    text: "Refresh"
+                    x_padding: 5
+                    font_size: 22
+                    background_color: "#036ffc"
+                    on_release:
+                        root.search_drives()
+            Label:
         Label:
-            id: dir_preview
-            text: "No files found."
+            size_hint_y: None
+            height: 10
+        Image:
+            id: check_done
+            source: 'images/checkmark.png'
+            #size: self.texture_size
+            opacity: 0
+        Label:
+            id: text_done
             color: 0,0,0
+            font_size: 20
+            text: "Files copied successfully!"
+            opacity: 0
         BoxLayout:
             orientation: 'horizontal'
             size_hint_y: None
@@ -817,6 +844,7 @@
                 font_size: 32
                 background_color: ("#70AD47")
                 on_release: 
+                    root.export()
                     #root.manager.current = "BiozScreen2"
             Label:
 
