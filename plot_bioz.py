@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('tkagg') # RaspPi specific backend
 import matplotlib.pyplot as plt
 
-filename = "max-50.csv"
+filename = "max-cole1.csv"
 folder = "test_data"
 filepath = folder + "/" + filename
 

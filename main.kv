@@ -8,16 +8,30 @@
         cols: 1
         rows: 3    
 
-        GridLayout:
+        BoxLayout:
             size_hint_y: None
             height: 60
-            cols: 3
-            rows: 1
+
+            orientation: 'horizontal'
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Quit"
+                font_size: 28
+                on_release: app.stop()
+                #color: 0, 0, 0 
             Label: 
                 markup: True
                 text: '[b]Vocal Fold Assessment Home[/b]'
                 color: 0, 0, 0   
-                font_size: 32               
+                font_size: 32  
+            Button: 
+                size_hint_x: None
+                width: 85
+                text: "Help"
+                font_size: 28
+                #on_release: root.manager.current = "BiozHelp"
+                #color: 0, 0, 0             
 
         GridLayout:
             size_hint_y: None
@@ -111,7 +125,7 @@
                 background_color: ("#4472C4")
                 on_release:
                     #root.manager.current = 'ViewBiozScreen1'
-                    root.manager.get_screen("ViewBiozScreen1").plot_bioz()
+                    root.manager.get_screen("ViewBiozScreen1").plot_bioz_zvr()
                     #print("Viewing BIOZ")
                     #Factory.biozPopup().open()
                     #app.show_bioz()
@@ -249,12 +263,14 @@
 <ViewBiozScreen1>:
     name: "ViewBiozScreen1"
     on_enter:
+        #root.next_file()
+        root.update_new_filename()
         #root.plot_bioz()
         #root.test_plot()
         #root.plot_in_background()
     BoxLayout:
         orientation: 'vertical'
-        padding: 5, 0, 5, 5
+        spacing: 5
 
         BoxLayout:
             size_hint_y: None
@@ -295,6 +311,23 @@
             orientation: 'vertical'
             Label:
                 text: "Test"
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            Label:
+                id: fname_next
+                text: "Filename: next-bioz.csv"
+                color: 0,0,0
+                font_size: 22
+            Label:
+            Button:
+                text: 'Next trial'
+                font_size: 30
+                background_color: ("#70AD47")
+                on_release: 
+                    root.next_file()
+                    root.manager.current = "BiozScreen2"
 
 
 
@@ -543,8 +576,8 @@
     name: "BiozScreen2"
     on_enter: 
     #     #root.ids.spinner.active = True
-        spinner.active = True
-        root.start_background_task()
+        #spinner.active = True
+        root.start_background_task_bioz()
         
         
         #spinner.active = False
@@ -605,7 +638,7 @@
             Label:
                 id: status
                 text: "Collecting BioZ Data..."
-                font_size: 20
+                font_size: 36
                 color: 0, 0, 0
             MDSpinner:
                 id: spinner
@@ -614,18 +647,11 @@
                 pos_hint: {'center_x': .5, 'center_y': 0}
                 active: False
             Label:
-                id: saved
-                text: "File save confirmation"
-                color: 0,0,0
-                opacity: 0
-                font_size: 20
-        
 
 <AudioScreen2>:
     name: "AudioScreen2"
     on_enter: 
-        spinner.active = True
-        root.start_background_task()
+        root.start_background_task_audio()
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
@@ -669,7 +695,7 @@
             Label:
                 id: status
                 text: "Recording Audio Data..."
-                font_size: 20
+                font_size: 36
                 color: 0, 0, 0
             MDSpinner:
                 id: spinner
@@ -678,11 +704,6 @@
                 pos_hint: {'center_x': .5, 'center_y': 0}
                 active: False
             Label:
-                id: saved
-                text: "File save confirmation"
-                color: 0,0,0
-                opacity: 0
-                font_size: 20
         
 
 
